@@ -165,14 +165,19 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
             </div>
           </div>
         </div>
-        <div
-          className={clsx("transition-all duration-300 ease-in-out overflow-hidden", isExpandedRight ? "w-60" : "w-0")}
-        >
-          <div className="bg-base-200 h-full">
+        <div className={clsx("transition-all bg-base-300 duration-300 ease-in-out overflow-hidden", isExpandedRight ? "w-60" : "w-0")}>
+
+        <div className="h-full mt-4 ml-4">
             <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
               <main>
                 <center>
                   <h1>{selectedLine ? `Notes for Line #${selectedLine}` : 'All Notes'}</h1>
+                  <button 
+                    onClick={() => setSelectedLine(null)} 
+                    className="btn btn-sm btn-primary mt-2 mb-4"
+                  >
+                    Show all Notes
+                  </button>
                 </center>
                 {isExpandedRight && (
                   <div className={selectedLine === null ? "space-y-4" : "relative"}>
