@@ -55,7 +55,7 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   };
 
   const toggleExpandRight = () => {
-    setIsExpandedRight(!isExpandedRight);
+    setIsExpandedRight(prev => !prev);
   };
 
   const toggleLanguage = (lang: "en" | "cn") => {
@@ -67,7 +67,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     console.log("event", event);
     // TODO: very strange here.
     // This codes no work: toggleExpandRight
-    setIsExpandedRight(true);
+    toggleExpandRight();
+    // setIsExpandedRight(true);
     setSelectedLine(lineNumber);
     const viewportTopY = window.scrollY; // 获取当前滚动位置的 Y 坐标
     setClickPosition({ x: event.clientX, y: viewportTopY + 100});
@@ -110,8 +111,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   return (
     <>
       <div className="flex">
-        <div className={clsx("transition-all duration-300 ease-in-out overflow-hidden", isExpanded ? "w-60" : "w-0")}>
-          <div className="bg-base-200 h-full">
+        <div className={clsx("transition-all bg-base-300 duration-300 ease-in-out overflow-hidden", isExpanded ? "w-60" : "w-0")}>
+          <div className="h-full mt-4 ml-4">
             <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
               <main>
                 <TopicCard />
