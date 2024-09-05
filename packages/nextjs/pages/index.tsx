@@ -55,7 +55,7 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   };
 
   const toggleExpandRight = () => {
-    setIsExpandedRight(!isExpandedRight);
+    setIsExpandedRight(prev => !prev);
   };
 
   const toggleLanguage = (lang: "en" | "cn") => {
@@ -67,7 +67,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     console.log("event", event);
     // TODO: very strange here.
     // This codes no work: toggleExpandRight
-    setIsExpandedRight(true);
+    toggleExpandRight();
+    // setIsExpandedRight(true);
     setSelectedLine(lineNumber);
     const viewportTopY = window.scrollY; // 获取当前滚动位置的 Y 坐标
     setClickPosition({ x: event.clientX, y: viewportTopY + 100});
