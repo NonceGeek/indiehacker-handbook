@@ -1,0 +1,10 @@
+{
+  "deploy": {
+    "project": "7ffd2253-32c9-46d2-9993-6911198dd723",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "mini_apps_light_backend.tsx"
+  }
+}
