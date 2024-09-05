@@ -172,10 +172,10 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
             <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
               <main>
                 <center>
-                  <h1>Notes for Line #{selectedLine}</h1>
+                  <h1>{selectedLine ? `Notes for Line #${selectedLine}` : 'All Notes'}</h1>
                 </center>
                 {isExpandedRight && (
-                  <div className="relative">
+                  <div className={selectedLine === null ? "space-y-4" : "relative"}>
                     {notes
                       .filter(note => selectedLine === null || note.line === selectedLine)
                       .map(note => {
@@ -184,12 +184,12 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
                           <div
                             key={note.id}
                             className="card bg-base-100 shadow-xl m-2"
-                            style={{
+                            style={selectedLine !== null ? {
                               position: "absolute",
-                              top: clickPosition ? `${clickPosition.y - 50}px` : "auto", // Adjust the offset as needed
+                              top: clickPosition ? `${clickPosition.y - 50}px` : "auto",
                               left: "0",
                               width: "240px",
-                            }}
+                            } : {}}
                           >
                             <div className="card-body">
                               <ReactMarkdown className="prose prose-sm markdown-content">{noteContent}</ReactMarkdown>
