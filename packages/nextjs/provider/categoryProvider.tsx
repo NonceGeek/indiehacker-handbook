@@ -39,7 +39,7 @@ export const CategoryProvider = ({ children }: CategoryProviderProps) => {
           label: "Cases 案例集",
           href: "https://github.com/NonceGeek/indiehacker-handbook/discussions/categories/cases-%E6%A1%88%E4%BE%8B%E9%9B%86",
         },
-        { label: "Group 社群", href: "group" }, // TODO
+        { label: "Group 社群", href: "https://github.com/NonceGeek/indiehacker-handbook/discussions/categories" },
         { label: "HackerHouse 黑客小屋", href: "hackerhouse" }, // TODO
         { label: "Readings 其他资源", href: "readings" }, // TODO
         { label: "About 关于", href: "about" }, // TODO
