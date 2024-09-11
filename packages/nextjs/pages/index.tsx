@@ -64,7 +64,10 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   }, [pageIndex, category, language]); // Add language to the dependency array
 
   useEffect(() => {
-    const { line } = router.query;
+    const { lang, line } = router.query;
+    if (lang && (lang === "en" || lang === "cn")) {
+      setLanguage(lang);
+    }
     if (line && typeof line === "string") {
       const lineNumber = parseInt(line, 10);
       if (!isNaN(lineNumber)) {
@@ -100,6 +103,7 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
 
   const toggleLanguage = (lang: "en" | "cn") => {
     setLanguage(lang);
+    router.push({ query: { ...router.query, lang } }, undefined, { shallow: true });
   };
 
   const handleLineClick = (lineNumber: number, event: React.MouseEvent) => {
