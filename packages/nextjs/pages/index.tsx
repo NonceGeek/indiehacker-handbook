@@ -9,6 +9,7 @@ import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/
 import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
 import { useCategoryContext } from "~~/provider/categoryProvider";
+import { useAccount } from "wagmi";
 
 interface ETHSpaceProps {
   markdownContentEn: string;
@@ -47,6 +48,10 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
   const [notesLines, setNotesLines] = useState<Set<number>>(new Set());
   const [urlLine, setUrlLine] = useState<number | null>(null);
+
+  const [newNoteWord, setNewNoteWord] = useState("");
+  const [newNoteContent, setNewNoteContent] = useState("");
+  const { address } = useAccount();
 
   const fetchNotes = async () => {
     try {
@@ -154,6 +159,68 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     }
   }, [language, notesLines]); // Add notesLines to the dependency array
 
+  const handleSubmitNote = async () => {
+    if (!selectedLine || !newNoteWord || !newNoteContent) return;
+
+    if (!address) {
+      alert("Please connect your wallet to submit a note.");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://indiehacker.deno.dev/add_notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          line: selectedLine,
+          word: newNoteWord,
+          note: newNoteContent,
+          version: language,
+          author: address,
+        }),
+      });
+
+      if (response.ok) {
+        // Clear input fields and refresh notes
+        setNewNoteWord("");
+        setNewNoteContent("");
+        await fetchNotes(); // Refresh notes after successful submission
+      } else {
+        console.error("Failed to submit note");
+      }
+    } catch (error) {
+      console.error("Error submitting note:", error);
+    }
+  };
+
+  const renderNoteBox = () => {
+    if (!isExpandedRight || selectedLine === null) return null;
+
+    return (
+      <div className="card bg-base-100 shadow-xl m-2 p-4">
+        <h3 className="text-lg font-semibold mb-2">Add a new note</h3>
+        <input
+          type="text"
+          placeholder="Word or phrase"
+          className="input input-bordered w-full mb-2 rounded-none"
+          value={newNoteWord}
+          onChange={e => setNewNoteWord(e.target.value)}
+        />
+        <textarea
+          placeholder="Your note"
+          className="textarea textarea-bordered w-full mb-2 rounded-none"
+          value={newNoteContent}
+          onChange={e => setNewNoteContent(e.target.value)}
+        />
+        <button onClick={handleSubmitNote} className="btn btn-primary">
+          Submit Note
+        </button>
+      </div>
+    );
+  };
+
   const renderNotes = () => {
     if (!isExpandedRight) return null;
 
@@ -171,7 +238,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     } else {
       // Render notes for the selected line
       return (
-        <div className="space-y-4" style={{ marginTop: clickPosition ? `${clickPosition.y - 50}px` : "0" }}>
+        <div className="space-y-4" style={{ marginTop: clickPosition ? `${clickPosition.y - 100}px` : "0" }}>
+          {renderNoteBox()}
           {filteredNotes.map((note, index) => (
             <div key={note.id} className="card bg-base-100 shadow-xl m-2">
               {renderNoteContent(note)}
@@ -215,8 +283,9 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
         </div>
         <div className="flex-1 bg-base-300 p-4 overflow-y-auto ml-60 mr-60">
           <div className="w-full bg-base-200 rounded-box p-3 flex flex-col">
-            <div className="flex items-center space-x-2 mb-4">
-              <button onClick={toggleExpand} className="bg-base-200 p-2 h-10 self-start">
+            {/* TODO: to make the div bellow left than now. */}
+            <div className="fixed rounded-box top-50 left-100 right-60 z-10 bg-base-200 p-4 flex items-center space-x-2 ">
+              <button onClick={toggleExpand} className="bg-base-300 p-2 h-10">
                 {isExpanded ? (
                   <ChevronDoubleRightIcon className="h-5 w-5" />
                 ) : (
@@ -225,17 +294,17 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
               </button>
               <button
                 onClick={() => toggleLanguage("en")}
-                className={`bg-base-200 p-2 h-10 ${language === "en" ? "bg-primary text-primary-content" : ""}`}
+                className={`bg-base-300 p-2 h-10 ${language === "en" ? "bg-primary text-primary-content" : ""}`}
               >
                 EN
               </button>
               <button
                 onClick={() => toggleLanguage("cn")}
-                className={`bg-base-200 p-2 h-10 ${language === "cn" ? "bg-primary text-primary-content" : ""}`}
+                className={`bg-base-300 p-2 h-10 ${language === "cn" ? "bg-primary text-primary-content" : ""}`}
               >
                 CN
               </button>
-              <button onClick={toggleExpandRight} className="bg-base-200 p-2 h-10 self-start">
+              <button onClick={toggleExpandRight} className="bg-base-300 p-2 h-10">
                 {isExpandedRight ? (
                   <ChevronDoubleLeftIcon className="h-5 w-5" />
                 ) : (
@@ -243,16 +312,20 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
                 )}
               </button>
             </div>
-            {postLoading && (
-              <div className="flex justify-center items-center">
-                Loading<span className="loading loading-dots loading-xs"></span>
-              </div>
-            )}
-            <div className="flex-grow overflow-y-auto">
-              <div ref={markdownRef} className="grid grid-cols-1 gap-2 p-4 md:gap-4 lg:grid-cols-1 xl:grid-cols-1">
-                <ReactMarkdown className="markdown-content prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none break-words">
-                  {language === "en" ? markdownContentEn : markdownContentCn}
-                </ReactMarkdown>
+            <div className="mt-16">
+              {" "}
+              {/* Add margin-top to prevent content from being hidden behind the fixed div */}
+              {postLoading && (
+                <div className="flex justify-center items-center">
+                  Loading<span className="loading loading-dots loading-xs"></span>
+                </div>
+              )}
+              <div className="flex-grow overflow-y-auto">
+                <div ref={markdownRef} className="grid grid-cols-1 gap-2 p-4 md:gap-4 lg:grid-cols-1 xl:grid-cols-1">
+                  <ReactMarkdown className="markdown-content prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none break-words">
+                    {language === "en" ? markdownContentEn : markdownContentCn}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
           </div>
@@ -267,10 +340,12 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
             <div className="space-y-4" style={{ marginTop: "100px" }}>
               <main>
                 <center>
-                  <h1>{selectedLine ? `Notes for Line #${selectedLine}` : "All Notes"}</h1>
-                  <button onClick={() => setSelectedLine(null)} className="btn btn-sm btn-primary mt-2 mb-4">
-                    Show all Notes
-                  </button>
+                  <div className="flex items-center justify-center space-x-2 mb-4">
+                    <h1>{selectedLine ? `Notes for Line #${selectedLine}` : "All Notes"}</h1>
+                    <button onClick={() => setSelectedLine(null)} className="btn btn-sm btn-primary">
+                      Show All
+                    </button>
+                  </div>
                 </center>
                 {renderNotes()}
               </main>

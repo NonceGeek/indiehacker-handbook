@@ -8,12 +8,38 @@ console.log("Hello from Indiehacker handbook!")
 const router = new Router();
 
 router
+  .post("/add_notes", async (context) => {
+    const supabase = createClient(
+    // Supabase API URL - env var exported by default.
+    Deno.env.get('SUPABASE_URL') ?? '',
+    // Supabase API ANON KEY - env var exported by default.
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+    // Change to get data from request body instead of query params
+    let content = await context.request.body.text();
+    content = JSON.parse(content);
+    const author = content.author;
+    const word = content.word;
+    const line = content.line;
+    const note = content.note;
+    const version = content.version;
+    const { data, error } = await supabase
+      .from('indiehacker_book_notes')
+      .insert([
+        { author, line, word, note, version }
+      ])
+    console.log(data)
+    
+    // Add response handling
+    if (error) {
+      context.response.status = 400;
+      context.response.body = { error: error.message };
+    } else {
+      context.response.status = 201;
+      context.response.body = { message: "Note added successfully" };
+    }
+  })
   .get("/notes", async (context) => {
-
-    // 2. parse params in post req.
-    // let content = await context.request.body.text();
-    // content = JSON.parse(content);
-    // const uuid = content.uuid;
 
     const supabase = createClient(
     // Supabase API URL - env var exported by default.
