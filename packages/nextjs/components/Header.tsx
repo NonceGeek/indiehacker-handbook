@@ -21,7 +21,7 @@ export const menuLinks: HeaderMenuLink[] = [
   },
   {
     label: "Twitter",
-    href: "https://twitter.com/0xleeduckg",
+    href: "https://twitter.com/0xleeduckgo",
   },
   {
     label: "🔥 Buy Shares to support!",
