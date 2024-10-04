@@ -1,128 +1,33 @@
+// 12227332: [
+//   {
+//     chainId: "3133122273327",
+//     name: "Neo",
+//     contracts: {
+//       // Hint: config here.
+//       OnChainBook: {
+//         address: "0x6cF202C9f795D90B3c2C8e8364Cf77008B2c18b1",
+
 const contracts = {
-  31337: [
+  10: [
     {
-      chainId: "31337",
-      name: "localhost",
+      chainId: "10",
+      name: "Optimism",
       contracts: {
-        AssetTagger: {
-          address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        // Hint: config here.
+        OnChainBook: {
+          address: "0xc5189F63eAc92EFFDD4eE473f5f4CB086d9f4aD7",
+
           abi: [
-            {
-              inputs: [],
-              stateMutability: "nonpayable",
-              type: "constructor",
-            },
-            {
-              inputs: [],
-              name: "chairperson",
-              outputs: [
-                {
-                  internalType: "address",
-                  name: "",
-                  type: "address",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "string",
-                  name: "_title",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "_content",
-                  type: "string",
-                },
-              ],
-              name: "createProposal",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "to",
-                  type: "address",
-                },
-              ],
-              name: "delegate",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "uint32",
-                  name: "id",
-                  type: "uint32",
-                },
-              ],
-              name: "getProposal",
-              outputs: [
-                {
-                  components: [
-                    {
-                      internalType: "string",
-                      name: "title",
-                      type: "string",
-                    },
-                    {
-                      internalType: "string",
-                      name: "content",
-                      type: "string",
-                    },
-                    {
-                      internalType: "address",
-                      name: "proposaler",
-                      type: "address",
-                    },
-                    {
-                      internalType: "uint256",
-                      name: "voteCount",
-                      type: "uint256",
-                    },
-                  ],
-                  internalType: "struct AssetTagger.Proposal",
-                  name: "",
-                  type: "tuple",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "voter",
-                  type: "address",
-                },
-              ],
-              name: "giveRightToVote",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
             {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "",
+                  name: "lineNum",
                   type: "uint256",
                 },
-              ],
-              name: "proposals",
-              outputs: [
                 {
                   internalType: "string",
-                  name: "title",
+                  name: "referWord",
                   type: "string",
                 },
                 {
@@ -130,14 +35,162 @@ const contracts = {
                   name: "content",
                   type: "string",
                 },
+              ],
+              name: "addComment",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              anonymous: false,
+              inputs: [
                 {
+                  indexed: false,
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  indexed: false,
                   internalType: "address",
-                  name: "proposaler",
+                  name: "author",
+                  type: "address",
+                },
+              ],
+              name: "BookCreated",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  indexed: false,
+                  internalType: "string[]",
+                  name: "fullContentArweaveIds",
+                  type: "string[]",
+                },
+              ],
+              name: "BookUpdated",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "author",
                   type: "address",
                 },
                 {
+                  indexed: false,
                   internalType: "uint256",
-                  name: "voteCount",
+                  name: "lineNum",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "referWord",
+                  type: "string",
+                },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "content",
+                  type: "string",
+                },
+              ],
+              name: "CommentAdded",
+              type: "event",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "_bodhiId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "_name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "_description",
+                  type: "string",
+                },
+                {
+                  internalType: "string[]",
+                  name: "_fullContentArweaveIds",
+                  type: "string[]",
+                },
+              ],
+              name: "createBook",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "string",
+                  name: "_description",
+                  type: "string",
+                },
+                {
+                  internalType: "string[]",
+                  name: "_fullContentArweaveIds",
+                  type: "string[]",
+                },
+              ],
+              name: "updateBook",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "book",
+              outputs: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "bodhiId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "address",
+                  name: "author",
+                  type: "address",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "commentCount",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
                   type: "uint256",
                 },
               ],
@@ -148,44 +201,31 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "proposal",
+                  name: "",
                   type: "uint256",
                 },
               ],
-              name: "vote",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "",
-                  type: "address",
-                },
-              ],
-              name: "voters",
+              name: "comments",
               outputs: [
                 {
-                  internalType: "uint256",
-                  name: "weight",
-                  type: "uint256",
-                },
-                {
-                  internalType: "bool",
-                  name: "voted",
-                  type: "bool",
-                },
-                {
                   internalType: "address",
-                  name: "delegate",
+                  name: "author",
                   type: "address",
                 },
                 {
                   internalType: "uint256",
-                  name: "vote",
+                  name: "lineNum",
                   type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "referWord",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "content",
+                  type: "string",
                 },
               ],
               stateMutability: "view",

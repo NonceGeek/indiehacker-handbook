@@ -27,6 +27,10 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "🔥 Buy Shares to support!",
     href: "https://bodhi.wtf/space/5/15353?action=buy",
   },
+  {
+    label: "Contract Interactor",
+    href: "/debug",
+  },
   // {
   //   label: "Tagger",
   //   href: "/debug",

@@ -10,18 +10,12 @@ const selectedContractStorageKey = "scaffoldEth2.selectedContract";
 const contractNames = getContractNames();
 
 const Debug: NextPage = () => {
-  const [uuid, setUuid] = useState<string | null>("");
 
   const [selectedContract, setSelectedContract] = useLocalStorage<ContractName>(
     selectedContractStorageKey,
     contractNames[0],
   );
 
-  useEffect(() => {
-    const queryParameters = new URLSearchParams(window.location.search);
-    const uuid = queryParameters.get("uuid");
-    setUuid(uuid);
-  });
   useEffect(() => {
     if (!contractNames.includes(selectedContract)) {
       setSelectedContract(contractNames[0]);
@@ -54,9 +48,6 @@ const Debug: NextPage = () => {
                 ))}
               </div>
             )}
-            <p>
-              <b>uuid: {uuid}</b>
-            </p>
             {contractNames.map(contractName => (
               <ContractUI
                 key={contractName}

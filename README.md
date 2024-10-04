@@ -1,18 +1,21 @@
-# 🏗 Bodhi Img
+# Indiehacker Handbook
 
 <h4 align="center">
-  <a href="https://bodhi-img.vercel.app"> -[ Lanuch App ]- </a>
+  <a href="https://indiehacker.rootmud.xyz"> -[ Lanuch App ]- </a>
 </h4>
 
-🧪 Browse and like images on the Bodhi!
+
+The handbook for the indiehackers, including the indiehacker accelerator, see in [discussion part](https://github.com/orgs/NonceGeek/discussions).
 
 > Smart Contract:
-> 
-> https://optimistic.etherscan.io/address/0x91ab92d5a6d85a25f4d16a89b16687a8964f5a6a#code
+>
+> **OP:** https://optimistic.etherscan.io/address/0x1cbf84ffe98771F0c04Ce83942B0f90c68F31e85#code
+>
+>  
 
 ## Quickstart
 
-如果您想快速体验我们的功能请通过：<a href="https://bodhi-img.vercel.app">Lanuch App</a>
+如果您想快速体验我们的功能请通过：<a href="https://indiehacker.rootmud.xyz">Lanuch App</a>
 
 ## Frontend
 ### Requirements
@@ -59,7 +62,7 @@ Visit your app on: `http://localhost:3000`. You can interact with your smart con
 
 Run smart contract test with `yarn hardhat:test`
 
-- Edit your smart contract `AssetTagger.sol` in `packages/hardhat/contracts`
+- Edit your smart contract `OnChainBook.sol` in `packages/hardhat/contracts`
 - Edit your frontend in `packages/nextjs/pages`
 - Edit your deployment scripts in `packages/hardhat/deploy`
 

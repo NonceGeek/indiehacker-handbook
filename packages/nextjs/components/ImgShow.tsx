@@ -23,7 +23,7 @@ const ImageShowItem = ({ img }) => {
   const [likes, setLikes] = useState(0);
   // <!-- smart contract things 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "AssetTagger",
+    contractName: "OnChainBook",
     functionName: "tagItem",
     args: [BigInt(img.id), JSON.stringify({ like: likes + 1 })],
     value: parseEther("0"),
@@ -38,7 +38,7 @@ const useTagsIndexByAsset = (assetId) => {
   const assetIdAsBigInt = BigInt(assetId);
   
   const { data, isLoading, error } = useScaffoldContractRead({
-    contractName: "AssetTagger",
+    contractName: "OnChainBook",
     functionName: "tagsIndexByAsset",
     args: [assetIdAsBigInt],
   });
