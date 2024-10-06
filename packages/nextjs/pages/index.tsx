@@ -11,7 +11,7 @@ import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useCategoryContext } from "~~/provider/categoryProvider";
-import { useCommentReader, useCommentsReader } from "~~/components/OnChainBookInteractor";
+// import { CommentReader } from "~~/components/OnChainBookInteractor";
 interface ETHSpaceProps {
   markdownContentEn: string;
   markdownContentCn: string;
@@ -87,8 +87,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const fetchOnChainNotes = async () => {
     if (!commentCount) return [];
     console.log("commentCount", commentCount);
-    // console.log("comment", useCommentReader({ commentId: 0 }));
-    // console.log("comments", useCommentsReader(commentCount));
+    // console.log("comment", CommentReader({ commentId: 0 }));
+
     // const onChainNotes = [];
     // for (let i = 0; i < commentCount; i++) {
     //   const { data: comment } = await useScaffoldContractRead({
