@@ -87,10 +87,11 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
       console.error("Error fetching notes:", error);
     }
   };
-
   useEffect(() => {
     fetchNotes();
+  }, []);
 
+  useEffect(() => {
     if (commentsReader.data) {
       const onChainNotes = commentsReader.data.map((comment: any) => ({
         id: `onchain-${comment.result[1]}-${comment.result[2]}`, // Using lineNum and word as a unique identifier
@@ -110,11 +111,11 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
       console.log("combinedNotes", combinedNotes);
 
       setCombinedNotesLines(new Set([...notesLines, ...onChainNotes.map(note => note.line)]));
-    }else{
+    } else {
       console.log("no commentsReader.data");
       setCombinedNotes(notes);
     }
-  }, [pageIndex, category, language, commentsReader.data]);
+  }, [pageIndex, category, language, commentsReader.data, notesLines, notes, combinedNotes]);
 
   useEffect(() => {
     const { lang, line } = router.query;
