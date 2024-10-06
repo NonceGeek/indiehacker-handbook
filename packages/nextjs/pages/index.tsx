@@ -5,12 +5,13 @@ import fs from "fs";
 import { NextPage } from "next";
 import path from "path";
 import ReactMarkdown from "react-markdown";
+import { useAccount } from "wagmi";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
+import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useCategoryContext } from "~~/provider/categoryProvider";
-import { useAccount } from "wagmi";
-
+import { CommentReader } from "~~/components/OnChainBookInteractor";
 interface ETHSpaceProps {
   markdownContentEn: string;
   markdownContentCn: string;
@@ -53,19 +54,55 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const [newNoteContent, setNewNoteContent] = useState("");
   const { address } = useAccount();
 
+  const { data: commentCount } = useScaffoldContractRead({
+    contractName: "OnChainBook",
+    functionName: "commentCount",
+  });
+
+  const { writeAsync: addCommentOnChain, isLoading: isAddingCommentOnChain } = useScaffoldContractWrite({
+    contractName: "OnChainBook",
+    functionName: "addComment",
+    args: [selectedLine, newNoteWord, newNoteContent],
+    onSuccess: () => {
+      console.log("Comment added on-chain successfully");
+      setNewNoteWord("");
+      setNewNoteContent("");
+      fetchNotes();
+    },
+  });
+
   const fetchNotes = async () => {
     try {
       const response = await fetch("https://indiehacker.deno.dev/notes");
       const data = await response.json();
       setNotes(data);
       setNotesLines(new Set(data.filter((note: Note) => note.version === language).map((note: Note) => note.line)));
+      
     } catch (error) {
       console.error("Error fetching notes:", error);
     }
   };
 
+  const fetchOnChainNotes = async () => {
+    if (!commentCount) return [];
+    console.log("commentCount", commentCount);
+    console.log("comment", CommentReader({ commentId: 0 }));
+
+    // const onChainNotes = [];
+    // for (let i = 0; i < commentCount; i++) {
+    //   const { data: comment } = await useScaffoldContractRead({
+    //     contractName: "OnChainBook",
+    //     functionName: "comments",
+    //     args: [i],
+    //   });
+
+    //   console.log("comment", comment);
+    // }
+  };
+
   useEffect(() => {
     fetchNotes();
+    fetchOnChainNotes();
   }, [pageIndex, category, language]); // Add language to the dependency array
 
   useEffect(() => {
@@ -195,6 +232,25 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     }
   };
 
+  const handleSubmitNoteOnChain = async () => {
+    if (!selectedLine || !newNoteWord || !newNoteContent) {
+      alert("Please fill in all fields before submitting the note on-chain.");
+      return;
+    }
+
+    if (!address) {
+      alert("Please connect your wallet to submit a note on-chain.");
+      return;
+    }
+
+    try {
+      await addCommentOnChain();
+    } catch (error) {
+      console.error("Error submitting note on-chain:", error);
+      alert("Failed to submit note on-chain. Please try again.");
+    }
+  };
+
   const renderNoteBox = () => {
     if (!isExpandedRight || selectedLine === null) return null;
 
@@ -214,8 +270,11 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
           value={newNoteContent}
           onChange={e => setNewNoteContent(e.target.value)}
         />
-        <button onClick={handleSubmitNote} className="btn btn-primary">
+        <button onClick={handleSubmitNote} className="btn btn-primary mb-2">
           Submit Note
+        </button>
+        <button onClick={handleSubmitNoteOnChain} className="btn btn-primary" disabled={isAddingCommentOnChain}>
+          {isAddingCommentOnChain ? "Submitting..." : "Submit Note On Chain"}
         </button>
       </div>
     );
