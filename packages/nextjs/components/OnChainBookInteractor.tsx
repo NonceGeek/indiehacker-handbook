@@ -3,21 +3,6 @@ import { useDeployedContractInfo, useScaffoldContractRead } from "~~/hooks/scaff
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { AbiFunctionReturnType, ContractAbi } from "~~/utils/scaffold-eth/contract";
 
-export const useCommentReader = ({ commentId }: { commentId: number }) => {
-  const commentIdBigInt = BigInt(commentId);
-  const { data, isLoading, error } = useScaffoldContractRead({
-    contractName: "OnChainBook",
-    functionName: "comments",
-    args: [commentIdBigInt],
-  });
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
-};
-
 export const useCommentsReader = (commentCount: bigint | undefined) => {
   const { data: deployedContract } = useDeployedContractInfo("OnChainBook");
   const contractReadsParams = [];

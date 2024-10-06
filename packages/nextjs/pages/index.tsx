@@ -11,7 +11,7 @@ import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useCategoryContext } from "~~/provider/categoryProvider";
-import { useCommentReader, useCommentsReader } from "~~/components/OnChainBookInteractor";
+import { useCommentsReader } from "~~/components/OnChainBookInteractor";
 interface ETHSpaceProps {
   markdownContentEn: string;
   markdownContentCn: string;
@@ -44,26 +44,30 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const [isExpandedRight, setIsExpandedRight] = useState(true);
   const [language, setLanguage] = useState<"en" | "cn">("cn");
   const [notes, setNotes] = useState<Array<Note>>([]);
+  const [combinedNotes, setCombinedNotes] = useState<Array<Note>>([]);
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
   const markdownRef = useRef<HTMLDivElement>(null);
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
+
   const [notesLines, setNotesLines] = useState<Set<number>>(new Set());
+  const [combinedNotesLines, setCombinedNotesLines] = useState<Set<number>>(new Set());
   const [urlLine, setUrlLine] = useState<number | null>(null);
 
   const [newNoteWord, setNewNoteWord] = useState("");
+
   const [newNoteContent, setNewNoteContent] = useState("");
+  
   const { address } = useAccount();
   const { data: commentCount } = useScaffoldContractRead({
     contractName: "OnChainBook",
     functionName: "commentCount",
   });
-  const commentReader = useCommentReader({ commentId: 0 });
   const commentsReader = useCommentsReader(commentCount);
 
   const { writeAsync: addCommentOnChain, isLoading: isAddingCommentOnChain } = useScaffoldContractWrite({
     contractName: "OnChainBook",
     functionName: "addComment",
-    args: [selectedLine, newNoteWord, newNoteContent],
+    args: [selectedLine, newNoteWord, newNoteContent, Math.floor(Date.now() / 1000).toString()],
     onSuccess: () => {
       console.log("Comment added on-chain successfully");
       setNewNoteWord("");
@@ -84,29 +88,33 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     }
   };
 
-  const fetchOnChainNotes = async () => {
-    if (!commentCount) return [];
-    console.log("commentCount", commentCount);
-    // console.log("comment", useCommentReader({ commentId: 0 }));
-    // console.log("comments", useCommentsReader(commentCount));
-    // const onChainNotes = [];
-    // for (let i = 0; i < commentCount; i++) {
-    //   const { data: comment } = await useScaffoldContractRead({
-    //     contractName: "OnChainBook",
-    //     functionName: "comments",
-    //     args: [i],
-    //   });
-
-    //   console.log("comment", comment);
-    // }
-  };
-
   useEffect(() => {
     fetchNotes();
-    // fetchOnChainNotes();
-    console.log("comment", commentReader);
-    console.log("comments", commentsReader);
-  }, [pageIndex, category, language]); // Add language to the dependency array
+
+    if (commentsReader.data) {
+      const onChainNotes = commentsReader.data.map((comment: any) => ({
+        id: `onchain-${comment.result[1]}-${comment.result[2]}`, // Using lineNum and word as a unique identifier
+        line: Number(comment.result[1]),
+        word: comment.result[2],
+        note: comment.result[3],
+        // author: "0x0",
+        author: comment.result[0],
+        created_at: new Date().toISOString(), // We don't have a timestamp from the blockchain, so using current time
+        version: "cn", // Assuming all on-chain comments are in the current language
+        onchain: true,
+      }));
+      console.log("onChainNotes", onChainNotes);
+      const combinedList = [...notes, ...onChainNotes];
+      console.log("combinedList", combinedList);
+      setCombinedNotes(combinedList);
+      console.log("combinedNotes", combinedNotes);
+
+      setCombinedNotesLines(new Set([...notesLines, ...onChainNotes.map(note => note.line)]));
+    }else{
+      console.log("no commentsReader.data");
+      setCombinedNotes(notes);
+    }
+  }, [pageIndex, category, language, commentsReader.data]);
 
   useEffect(() => {
     const { lang, line } = router.query;
@@ -171,7 +179,7 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
       const elements = markdownContainer.querySelectorAll("p, h1, h2, h3, h4, h5, h6, li");
       elements.forEach((element, index) => {
         const lineNumber = index + 1;
-        if (notesLines.has(lineNumber)) {
+        if (combinedNotesLines.has(lineNumber)) {
           // TODO: use the blue underline instead of bg-yellow-100, not spec background color.
           element.style.textDecoration = "underline";
           element.style.textDecorationStyle = "dotted";
@@ -286,9 +294,9 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const renderNotes = () => {
     if (!isExpandedRight) return null;
 
-    const filteredNotes = notes
+    const filteredNotes = combinedNotes
       .filter(note => (selectedLine === null || note.line === selectedLine) && note.version === language)
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()); // Sort notes
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
     if (selectedLine === null) {
       // Render all notes
@@ -319,7 +327,10 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
         <ReactMarkdown className="prose prose-sm markdown-content">{noteContent}</ReactMarkdown>
         <div className="card-actions justify-end">
           <Address address={note.author} />
-          <div className="badge badge-outline">{new Date(note.created_at).toLocaleDateString()}</div>
+          <div className="flex flex-col items-end">
+            <div className="badge badge-outline">{new Date(note.created_at).toLocaleDateString()}</div>
+            {note.onchain && <div className="badge badge-secondary mt-1">On-chain</div>}
+          </div>
         </div>
       </div>
     );

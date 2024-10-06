@@ -15,32 +15,9 @@ const contracts = {
       contracts: {
         // Hint: config here.
         OnChainBook: {
-          address: "0xc5189F63eAc92EFFDD4eE473f5f4CB086d9f4aD7",
+          address: "0x505d9Ae884AC1A7f243152A24E0A1Cbd1d04Cc6C",
 
           abi: [
-            {
-              inputs: [
-                {
-                  internalType: "uint256",
-                  name: "lineNum",
-                  type: "uint256",
-                },
-                {
-                  internalType: "string",
-                  name: "referWord",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "content",
-                  type: "string",
-                },
-              ],
-              name: "addComment",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
             {
               anonymous: false,
               inputs: [
@@ -55,6 +32,24 @@ const contracts = {
                   internalType: "address",
                   name: "author",
                   type: "address",
+                },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "bodhiId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "string[]",
+                  name: "fullContentArweaveIds",
+                  type: "string[]",
                 },
               ],
               name: "BookCreated",
@@ -106,6 +101,12 @@ const contracts = {
                   name: "content",
                   type: "string",
                 },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "timestamp",
+                  type: "string",
+                },
               ],
               name: "CommentAdded",
               type: "event",
@@ -114,44 +115,26 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "_bodhiId",
+                  name: "lineNum",
                   type: "uint256",
                 },
                 {
                   internalType: "string",
-                  name: "_name",
+                  name: "referWord",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "_description",
+                  name: "content",
                   type: "string",
                 },
-                {
-                  internalType: "string[]",
-                  name: "_fullContentArweaveIds",
-                  type: "string[]",
-                },
-              ],
-              name: "createBook",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [
                 {
                   internalType: "string",
-                  name: "_description",
+                  name: "timestamp",
                   type: "string",
                 },
-                {
-                  internalType: "string[]",
-                  name: "_fullContentArweaveIds",
-                  type: "string[]",
-                },
               ],
-              name: "updateBook",
+              name: "addComment",
               outputs: [],
               stateMutability: "nonpayable",
               type: "function",
@@ -227,8 +210,59 @@ const contracts = {
                   name: "content",
                   type: "string",
                 },
+                {
+                  internalType: "string",
+                  name: "timestamp",
+                  type: "string",
+                },
               ],
               stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "_bodhiId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "_name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "_description",
+                  type: "string",
+                },
+                {
+                  internalType: "string[]",
+                  name: "_fullContentArweaveIds",
+                  type: "string[]",
+                },
+              ],
+              name: "createBook",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "string",
+                  name: "_description",
+                  type: "string",
+                },
+                {
+                  internalType: "string[]",
+                  name: "_fullContentArweaveIds",
+                  type: "string[]",
+                },
+              ],
+              name: "updateBook",
+              outputs: [],
+              stateMutability: "nonpayable",
               type: "function",
             },
           ],
