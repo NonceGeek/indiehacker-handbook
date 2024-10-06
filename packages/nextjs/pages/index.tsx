@@ -11,7 +11,7 @@ import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useCategoryContext } from "~~/provider/categoryProvider";
-import { CommentReader } from "~~/components/OnChainBookInteractor";
+import { useCommentReader, useCommentsReader } from "~~/components/OnChainBookInteractor";
 interface ETHSpaceProps {
   markdownContentEn: string;
   markdownContentCn: string;
@@ -53,11 +53,12 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const [newNoteWord, setNewNoteWord] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
   const { address } = useAccount();
-
   const { data: commentCount } = useScaffoldContractRead({
     contractName: "OnChainBook",
     functionName: "commentCount",
   });
+  const commentReader = useCommentReader({ commentId: 0 });
+  const commentsReader = useCommentsReader(commentCount);
 
   const { writeAsync: addCommentOnChain, isLoading: isAddingCommentOnChain } = useScaffoldContractWrite({
     contractName: "OnChainBook",
@@ -86,8 +87,8 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const fetchOnChainNotes = async () => {
     if (!commentCount) return [];
     console.log("commentCount", commentCount);
-    console.log("comment", CommentReader({ commentId: 0 }));
-
+    // console.log("comment", useCommentReader({ commentId: 0 }));
+    // console.log("comments", useCommentsReader(commentCount));
     // const onChainNotes = [];
     // for (let i = 0; i < commentCount; i++) {
     //   const { data: comment } = await useScaffoldContractRead({
@@ -102,7 +103,9 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
 
   useEffect(() => {
     fetchNotes();
-    fetchOnChainNotes();
+    // fetchOnChainNotes();
+    console.log("comment", commentReader);
+    console.log("comments", commentsReader);
   }, [pageIndex, category, language]); // Add language to the dependency array
 
   useEffect(() => {
