@@ -1,21 +1,20 @@
-// 12227332: [
+// 10: [
 //   {
-//     chainId: "3133122273327",
-//     name: "Neo",
+//     chainId: "10",
+//     name: "Optimism",
 //     contracts: {
 //       // Hint: config here.
 //       OnChainBook: {
-//         address: "0x6cF202C9f795D90B3c2C8e8364Cf77008B2c18b1",
-
+//         address: "0x505d9Ae884AC1A7f243152A24E0A1Cbd1d04Cc6C",
 const contracts = {
-  10: [
+  12227332: [
     {
-      chainId: "10",
-      name: "Optimism",
+      chainId: "12227332",
+      name: "Neo",
       contracts: {
         // Hint: config here.
         OnChainBook: {
-          address: "0x505d9Ae884AC1A7f243152A24E0A1Cbd1d04Cc6C",
+          address: "0xc6C800250dc333B07fB4054f8575D8795756F697",
 
           abi: [
             {

@@ -94,28 +94,34 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   useEffect(() => {
     if (commentsReader.data) {
       const onChainNotes = commentsReader.data.map((comment: any) => ({
-        id: `onchain-${comment.result[1]}-${comment.result[2]}`, // Using lineNum and word as a unique identifier
+        id: `onchain-${comment.result[1]}-${comment.result[2]}`,
         line: Number(comment.result[1]),
         word: comment.result[2],
         note: comment.result[3],
-        // author: "0x0",
         author: comment.result[0],
-        created_at: new Date().toISOString(), // We don't have a timestamp from the blockchain, so using current time
-        version: "cn", // Assuming all on-chain comments are in the current language
+        created_at: new Date().toISOString(),
+        version: language, // Use the current language state
         onchain: true,
       }));
-      console.log("onChainNotes", onChainNotes);
-      const combinedList = [...notes, ...onChainNotes];
-      console.log("combinedList", combinedList);
-      setCombinedNotes(combinedList);
-      console.log("combinedNotes", combinedNotes);
 
-      setCombinedNotesLines(new Set([...notesLines, ...onChainNotes.map(note => note.line)]));
+      const combinedList = [...notes, ...onChainNotes];
+      setCombinedNotes(combinedList);
+
+      const newCombinedNotesLines = new Set([
+        ...Array.from(notesLines),
+        ...onChainNotes.map(note => note.line)
+      ]);
+      setCombinedNotesLines(newCombinedNotesLines);
+
+      console.log("onChainNotes", onChainNotes);
+      console.log("combinedList", combinedList);
+      console.log("combinedNotes", combinedList); // Use combinedList instead of combinedNotes state
     } else {
       console.log("no commentsReader.data");
       setCombinedNotes(notes);
+      setCombinedNotesLines(new Set(notesLines));
     }
-  }, [pageIndex, category, language, commentsReader.data, notesLines, notes, combinedNotes]);
+  }, [commentsReader.data, notes, notesLines, language]);
 
   useEffect(() => {
     const { lang, line } = router.query;
