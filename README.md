@@ -1,7 +1,7 @@
 # 🏗 Bodhi Img
 
 <h4 align="center">
-  <a href="https://bodhi-img.vercel.app"> -[ Lanuch App ]- </a>
+  <a href="https://indiehacker.rootmud.xyz"> -[ Lanuch App ]- </a>
 </h4>
 
 🧪 Browse and like images on the Bodhi!
@@ -12,7 +12,7 @@
 
 ## Quickstart
 
-如果您想快速体验我们的功能请通过：<a href="https://bodhi-img.vercel.app">Lanuch App</a>
+如果您想快速体验我们的功能请通过：<a href="https://indiehacker.rootmud.xyz">Lanuch App</a>
 
 ## Frontend
 ### Requirements
