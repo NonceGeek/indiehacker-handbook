@@ -268,7 +268,7 @@
 
 用曲线图来表达，即是：
 
-![Image](https://p.ipic.vip/dm9h72.jpg)
+![Fuliquxian](./fuliquxian.jpg)
 
 我们的期望是在不断优化下，关键指标能遵循复利曲线，例如：总收益、用户数。
 

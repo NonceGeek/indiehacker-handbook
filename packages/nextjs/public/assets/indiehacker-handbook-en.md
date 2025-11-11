@@ -268,7 +268,7 @@ The compound interest curve is the optimal form of the growth curve, which can b
 
 Expressed in a curve chart, it is:
 
-![Image](https://p.ipic.vip/dm9h72.jpg)
+![Fuliquxian](./fuliquxian.jpg)
 
 Our expectation is that under continuous optimization, key indicators can follow the compound interest curve, such as total revenue and number of users.
 
